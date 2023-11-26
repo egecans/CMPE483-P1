@@ -4,10 +4,15 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract USDStableCoin is ERC20, Ownable {
+contract USDStableCoin is ERC20 {
+    constructor() ERC20("USD Stable Coin", "USDSC") {
+        
+        // Mint initial supply to the contract deployer
+         _mint(address(this), 10000); // Example: Mint 1,000 MYGOV tokens
+    }
 
-    constructor() ERC20("USD Stable Coin", "USDS") {
-        _mint(msg.sender, 1000000 * 10 ** decimals()); // Mint initial supply (1,000,000 USDS)
+    function faucet() public {
+        this.transfer(msg.sender, 1);
     }
     
 }
