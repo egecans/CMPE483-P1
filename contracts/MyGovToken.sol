@@ -11,6 +11,7 @@ contract MyGovToken is ERC20 {
     uint surveyCreationMyGovFee =  2; 
     uint projectCreationUSDFee =  50; //0.1 ethers in wei
     uint ProjectCreationMyGovFee = 5; // in MyGov TOKEN 
+    uint numOfFundedProjects = 0;
 
     // Constructor to initialize the token with a name and symbol
     constructor(uint tokensupply) ERC20("MyGov Token", "MYGOV") {
@@ -32,6 +33,7 @@ contract MyGovToken is ERC20 {
     struct User {
         address userAddress;
         uint usdStableCoinBalance;
+        bool fauceted;
     }
 
     struct ProjectProposal {
@@ -45,9 +47,15 @@ contract MyGovToken is ERC20 {
 
     Survey[] public surveys;
     ProjectProposal[] public proposals;
+    mapping(address => User) public users;  
 
     function isMember(address userAddress) public view returns(bool){
         return balanceOf(userAddress) > 0;
+    }
+
+    function donateMyGovToken(uint amount) public {
+        require(balanceOf(msg.sender) >= amount, 'Insufficient amount of MyGovToken');
+        transferFrom(msg.sender, address(this), amount);
     }
 
     function getSurveyResults(uint surveyid) public view returns(uint numtaken, uint[] memory results) {
@@ -94,13 +102,7 @@ contract MyGovToken is ERC20 {
     }
 
     function getNoOfFundedProjects() public view returns(uint numfunded) {
-        numfunded = 0;
-        for (uint i = 0; i < proposals.length; i++) 
-        {
-            if (proposals[i].isFunded) {
-                numfunded ++;
-            }
-        }
+        numfunded = numOfFundedProjects;
         return numfunded;
     }
 
@@ -109,14 +111,10 @@ contract MyGovToken is ERC20 {
         return numsurveys;
     }
 
+    function faucet() public {
+        require(users[msg.sender].fauceted == false, "User got faucet already.");
+        transferFrom(address(this), msg.sender, 1);
 
-
-
-
-
-
-
-
-    
+    }
 }
 
