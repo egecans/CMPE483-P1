@@ -6,13 +6,21 @@ import "./USDStableCoin.sol";
 
 contract MyGovToken is ERC20 {
 
+    // Coin fees for submit survey or project proposal
     uint surveyUSDFee =  5; 
     uint surveyMyGovFee =  2; 
     uint projectUSDFee =  50;
     uint projectMyGovFee = 5;
+
     uint numOfFundedProjects = 0;
+
+    // Reference to the USD Stable Coin Contract
     USDStableCoin usdStableCoinContract;
+
+    // Number of members in the system
     uint numberOfMembers = 0;
+
+    // The amount of reserved USD for granted projects
     uint reservedUSD = 0;
 
     // Constructor to initialize the token with a name and symbol
@@ -24,6 +32,7 @@ contract MyGovToken is ERC20 {
         _mint(address(this), tokensupply); // Example: Mint 1,000 MYGOV tokens
     }
 
+    // Struct representing a survey
     struct Survey {
         string ipfsHash;
         address owner;
@@ -36,12 +45,13 @@ contract MyGovToken is ERC20 {
 
     }
 
+    // Struct representing a user
     struct User {
         address userAddress;
-        bool fauceted;
-        mapping(uint => address) delegation;
-        uint lockedUntil;
-        mapping(uint => uint) weight;
+        bool fauceted; // Shows user get faucet or not
+        mapping(uint => address) delegation; // key is project id, value is address of the delegate
+        uint lockedUntil; // timestampt that holds the time user's token is locked
+        mapping(uint => uint) weight; // vote weight, key holds projectid value holds the vote weight
     }
 
     struct ProjectProposal {
@@ -50,12 +60,12 @@ contract MyGovToken is ERC20 {
         uint deadline;
         uint[] paymentAmounts;
         uint[] paySchedule;
-        bool isFunded;
-        mapping(address => bool) voters;
-        mapping(address => bool) paymentvoters;
-        uint vote; 
-        uint votepayment;
-        bool[] withdrawed;
+        bool isFunded; // shows project is funded or not
+        mapping(address => bool) voters; // voting status of users
+        mapping(address => bool) paymentvoters; // payment voting status of users
+        uint vote; // proposal true vote count
+        uint votepayment; // payment true vote count
+        bool[] withdrawed; // withdraw status of payments
         
 
     }
@@ -64,6 +74,7 @@ contract MyGovToken is ERC20 {
     ProjectProposal[] public proposals;
     mapping(address => User) public users;  
 
+    // Function for users to donate MyGov tokens to the contract
     function donateMyGovToken(uint amount) public {
         require(balanceOf(msg.sender) >= amount, "Insufficient amount of MyGovToken");
         transfer(address(this), amount);
@@ -72,18 +83,21 @@ contract MyGovToken is ERC20 {
         }
     }
 
+    // Function for users to donate USD Stable Coins to the contract
     function donateUSD(uint amount) public {
         require(usdStableCoinContract.balanceOf(msg.sender) >= amount, 'Insufficient amount of USD Stable Coin');
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), amount);
 
     }
 
+    // Function to get survey results
     function getSurveyResults(uint surveyid) public view returns(uint numtaken, uint[] memory results) {
         numtaken = surveys[surveyid].numTaken;
         results = surveys[surveyid].results;
         return (numtaken, results);
     }
 
+    // Function to get survey information
     function getSurveyInfo(uint surveyid) public view returns(string memory ipfshash, uint surveydeadline,uint numchoices, uint atmostchoice) {
         ipfshash = surveys[surveyid].ipfsHash;
         surveydeadline = surveys[surveyid].deadline;
@@ -92,16 +106,19 @@ contract MyGovToken is ERC20 {
         return (ipfshash, surveydeadline, numchoices, atmostchoice);
     } 
 
+    // Function to get the owner of a survey
     function getSurveyOwner(uint surveyid) public view returns(address surveyowner) {
         surveyowner = surveys[surveyid].owner;
         return surveyowner;
     }
 
+    // Function to check if a project is funded
     function getIsProjectFunded(uint projectid) public view returns(bool funded) {
         funded = proposals[projectid].isFunded;
         return funded;
     }
 
+    // Function to get the next payment amount for a project
     function getProjectNextPayment(uint projectid) public view returns(int next) {
         ProjectProposal storage project = proposals[projectid];
         for (uint i = 0; i < project.paySchedule.length; i++) 
@@ -115,11 +132,13 @@ contract MyGovToken is ERC20 {
 
     }
     
+    // Function to get the owner of a project
     function getProjectOwner(uint projectid) public view returns(address projectowner) {
         projectowner = proposals[projectid].projectOwner;
         return projectowner;
     }
 
+    // Function to get project information
     function getProjectInfo(uint activityid) public view returns(string memory ipfshash, uint votedeadline, uint[] memory paymentamounts, uint[] memory payschedule) {
         ipfshash = proposals[activityid].ipfsHash;
         votedeadline = proposals[activityid].deadline;
@@ -129,16 +148,19 @@ contract MyGovToken is ERC20 {
         return (ipfshash, votedeadline, paymentamounts, payschedule);
     }
 
+    // Function to get the number of project proposals
     function getNoOfProjectProposals() public view returns(uint numproposals) {
         numproposals = proposals.length;
         return numproposals;
     }
 
+    // Function to get the number of funded projects
     function getNoOfFundedProjects() public view returns(uint numfunded) {
         numfunded = numOfFundedProjects;
         return numfunded;
     }
 
+    // Function to get the USD received by a project
     function getUSDReceivedByProject (uint projectid) public view returns(uint amount) {
         amount = 0;
         ProjectProposal storage project = proposals[projectid];
@@ -152,11 +174,13 @@ contract MyGovToken is ERC20 {
         return amount;
     }
 
+    // Function to get the number of surveys
     function getNoOfSurveys() public view returns(uint numsurveys) {
         numsurveys = surveys.length;
         return numsurveys;
     }
 
+    // Faucet function to distribute MyGov token to users
     function faucet() public {
         require(users[msg.sender].fauceted == false, "User got already the faucet.");        
         this.transfer(msg.sender, 1);
@@ -164,12 +188,14 @@ contract MyGovToken is ERC20 {
         numberOfMembers ++;
     }
 
+    // Function to submit survey
     function submitSurvey(string memory ipfshash,uint surveydeadline,uint numchoices, uint atmostchoice) public returns (uint surveyid) {
         require(balanceOf(msg.sender) > 0, "Users must be member to submit survey.");
         require(balanceOf(msg.sender) >= surveyMyGovFee, "There isn't enough amount of MyGovToken to submit survey.");
         require(usdStableCoinContract.balanceOf(msg.sender) >= surveyUSDFee, "There isn't enough amount of USD to submit survey.");
         transfer(address(this), surveyMyGovFee);
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), surveyUSDFee);
+        // Survey initialization
         surveyid = surveys.length;
         Survey storage survey = surveys[surveyid];
         survey.ipfsHash = ipfshash;
@@ -189,12 +215,14 @@ contract MyGovToken is ERC20 {
         return surveyid;
     }
 
+    // Function to take survey
     function takeSurvey(uint surveyid, uint [] memory choices) public {
         Survey storage _survey = surveys[surveyid];
         require(balanceOf(msg.sender) > 0, "Users must be member to take survey.");
         require(_survey.deadline < block.timestamp, "Deadline is passed.");
         require(_survey.participants[msg.sender] == false, "User has already taken the survey.");
         require(_survey.atMostChoice >= choices.length, "User chose too much option.");
+        // Answer survey questions
         for (uint i = 0; i < choices.length; i ++) {
             uint choice = choices[i];
             _survey.results[choice] ++;
@@ -203,12 +231,14 @@ contract MyGovToken is ERC20 {
         _survey.participants[msg.sender] = true;
     }
 
+    // Function to submit project proposal
     function submitProjectProposal(string memory ipfshash, uint votedeadline, uint [] memory paymentamounts, uint [] memory payschedule) public returns (uint projectid) {
         require(balanceOf(msg.sender) > 0, "Users must be member to submit survey.");
         require(balanceOf(msg.sender) >= projectMyGovFee, "There isn't enough amount of MyGovToken to propose project.");
         require(usdStableCoinContract.balanceOf(msg.sender) >= projectUSDFee, "There isn't enough amount of USD to propose project.");
         transfer(address(this), projectMyGovFee);
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), projectUSDFee);
+        // Project Proposal initialization
         projectid = proposals.length;
         ProjectProposal storage project = proposals[projectid];
         project.ipfsHash = ipfshash;
@@ -230,12 +260,13 @@ contract MyGovToken is ERC20 {
         return projectid;
     }
 
+    // Function to reserve project grant
     function reserveProjectGrant(uint projectid) public {
         ProjectProposal storage project = proposals[projectid];
         require(msg.sender == project.projectOwner, "User is not the project owner.");
         require(project.deadline < block.timestamp, "Deadline is passed.");
         require(project.vote >= numberOfMembers/10, "Insufficient vote");
-        uint funding = 0;
+        uint funding = 0; // Total amount of funding
         
         for (uint i = 0; i < project.paymentAmounts.length; i ++) 
         {
@@ -248,11 +279,13 @@ contract MyGovToken is ERC20 {
         numOfFundedProjects ++;
     }
 
+    // Function to withdraw project payment
     function withdrawProjectPayment(uint projectid) public {
         ProjectProposal storage project = proposals[projectid];
         require(project.isFunded, "Project must be funded.");
         require(msg.sender == project.projectOwner, "User is not the project owner.");
         if (project.votepayment >= numberOfMembers/100) {
+            // Withdraw the payments that schedule is previous from the current time
             for (uint i = 0; i < project.paySchedule.length; i++) 
             {
                 if (project.withdrawed[i] == false && project.paySchedule[i] < block.timestamp) {
@@ -263,11 +296,12 @@ contract MyGovToken is ERC20 {
                 }
             }
         } else {
-            project.isFunded = false;
+            project.isFunded = false; // Project lost its funding
         }
         
     }
 
+    // Function to delegate vote
     function delegateVoteTo(address memberaddr,uint projectid) public {
         ProjectProposal storage project = proposals[projectid];
         User storage user = users[msg.sender];
@@ -280,14 +314,16 @@ contract MyGovToken is ERC20 {
         require(user.delegation[projectid] == address(0), "User already delegated his/her vote.");
         require(delegate.delegation[projectid] == address(0), "Delegate already delegated his/her vote.");
         user.delegation[projectid] = memberaddr;
+        // initialize delegate weight or increment
         if (delegate.weight[projectid] == 0 || delegate.weight[projectid] == 1) {
             delegate.weight[projectid] = 2;
         } else {
             delegate.weight[projectid] ++;
         }
-        user.lockedUntil = project.deadline;
+        user.lockedUntil = project.deadline; // locked user's token until deadline of project
     }
 
+    // Function to vote for project proposal 
     function voteForProjectProposal(uint projectid,bool choice) public {
         require(balanceOf(msg.sender) > 0, "Voter must be a member.");
         ProjectProposal storage project = proposals[projectid];
@@ -297,11 +333,12 @@ contract MyGovToken is ERC20 {
         require(block.timestamp > user.lockedUntil, "User's vote is locked until deadline of another project.");
         require(block.timestamp < project.deadline, "Deadline of the proposal is passed.");
         if (choice == true) {
-            project.vote += user.weight[projectid];
+            project.vote += user.weight[projectid]; // increment vote count with weight of the user
         }
         project.voters[msg.sender] = true;
     }
 
+    // Function to vote for project payment
     function voteForProjectPayment(uint projectid,bool choice) public {
         require(balanceOf(msg.sender) > 0, "Voter must be a member.");
         ProjectProposal storage project = proposals[projectid];
@@ -311,7 +348,7 @@ contract MyGovToken is ERC20 {
         require(block.timestamp > user.lockedUntil, "User's vote is locked until deadline of another project.");
         require(block.timestamp < project.deadline, "Deadline of the proposal is passed.");
         if (choice == true) {
-            project.votepayment += user.weight[projectid];
+            project.votepayment += user.weight[projectid]; // increment payment vote count with weight of the user
         }
         project.paymentvoters[msg.sender] = true;
     }
