@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./USDStableCoin.sol";
@@ -78,7 +78,7 @@ contract MyGovToken is ERC20 {
     function donateMyGovToken(uint amount) public {
         require(balanceOf(msg.sender) >= amount, "Insufficient amount of MyGovToken");
         transfer(address(this), amount);
-        if (balanceOf(msg.sender) == 0) {
+        if (balanceOf(msg.sender) == 0 && numberOfMembers > 0){
             numberOfMembers --;
         }
     }
