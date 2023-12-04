@@ -20,7 +20,7 @@ describe("MyGovToken", function () {
 
     // Deploy the contract
     myGovTokenInstance = await MyGovToken.connect(deployer).deploy(
-      1000000,
+      20000000,
       "0xd9145CCE52D386f254917e481eB44e9943F39138"
     );
     await myGovTokenInstance.deployed();
