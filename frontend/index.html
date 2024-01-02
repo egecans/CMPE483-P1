@@ -48,13 +48,39 @@
       <!-- Connect Button -->
       <div class="function-container">
          <button id="connectButton">Connect</button>
+         <p id="connectMessage"></p>
       </div>
 
       <hr />
 
-      <!-- Get Balance Button -->
+      <!-- Get Balance of MyGovToken -->
       <div class="function-container">
-         <button id="balanceButton">Get Balance</button>
+         <button id="getBalanceOfMyGovTokenButton">Get Balance of MyGovToken</button>
+         <p id="getBalanceOfMyGovTokenMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Balance of USD Stable Coins -->
+      <div class="function-container">
+         <button id="getBalanceOfUSDStableCoinButton">Get Balance of USD Stable Coins</button>
+         <p id="getBalanceOfUSDStableCoinMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Faucet -->
+      <div class="function-container">
+         <button id="myGovTokenFaucetButton">MyGovToken Faucet</button>
+         <p id="myGovTokenFaucetMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Faucet -->
+      <div class="function-container">
+         <button id="usdStableCoinFaucetButton">UsdStableCoin Faucet</button>
+         <p id="usdStableCoinFaucetMessage"></p>
       </div>
 
       <hr />
@@ -64,6 +90,7 @@
          <label for="donateMyGovTokenAmount">Donate MyGovToken Amount:</label>
          <input type="number" id="donateMyGovTokenAmount" placeholder="Enter amount" />
          <button id="donateMyGovTokenButton">Donate MyGovToken</button>
+         <p id="donateMyGovTokenMessage"></p>
       </div>
 
       <hr />
@@ -73,104 +100,7 @@
          <label for="donateUSDAmount">Donate USD Amount:</label>
          <input type="number" id="donateUSDAmount" placeholder="Enter amount" />
          <button id="donateUSDButton">Donate USD</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Survey Information -->
-      <div class="function-container">
-         <label for="surveyId">Survey ID:</label>
-         <input type="number" id="surveyId" placeholder="Enter survey ID" />
-         <button id="getSurveyInfoButton">Get Survey Info</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Survey Owner -->
-      <div class="function-container">
-         <label for="surveyOwnerSurveyId">Survey ID:</label>
-         <input type="number" id="surveyOwnerSurveyId" placeholder="Enter survey ID" />
-         <button id="getSurveyOwnerButton">Get Survey Owner</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Is Project Funded -->
-      <div class="function-container">
-         <label for="projectFundedId">Project ID:</label>
-         <input type="number" id="projectFundedId" placeholder="Enter project ID" />
-         <button id="getIsProjectFundedButton">Is Project Funded</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Project Next Payment -->
-      <div class="function-container">
-         <label for="projectNextPaymentId">Project ID:</label>
-         <input type="number" id="projectNextPaymentId" placeholder="Enter project ID" />
-         <button id="getProjectNextPaymentButton">Get Project Next Payment</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Project Owner -->
-      <div class="function-container">
-         <label for="projectOwnerProjectId">Project ID:</label>
-         <input type="number" id="projectOwnerProjectId" placeholder="Enter project ID" />
-         <button id="getProjectOwnerButton">Get Project Owner</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Project Info -->
-      <div class="function-container">
-         <label for="projectInfoId">Project ID:</label>
-         <input type="number" id="projectInfoId" placeholder="Enter project ID" />
-         <button id="getProjectInfoButton">Get Project Info</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Number of Project Proposals -->
-      <div class="function-container">
-         <button id="getNoOfProjectProposalsButton">Get Number of Project Proposals</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Number of Funded Projects -->
-      <div class="function-container">
-         <button id="getNoOfFundedProjectsButton">Get Number of Funded Projects</button>
-      </div>
-
-      <hr />
-
-      <!-- Get USD Received by Project -->
-      <div class="function-container">
-         <label for="usdReceivedProjectId">Project ID:</label>
-         <input type="number" id="usdReceivedProjectId" placeholder="Enter project ID" />
-         <button id="getUSDReceivedByProjectButton">Get USD Received by Project</button>
-      </div>
-
-      <hr />
-
-      <!-- Get Number of Surveys -->
-      <div class="function-container">
-         <button id="getNoOfSurveysButton">Get Number of Surveys</button>
-      </div>
-
-      <hr />
-
-      <!-- Faucet -->
-      <div class="function-container">
-         <button id="myGovTokenFaucetButton">MyGovToken Faucet</button>
-      </div>
-
-      <hr />
-
-      <!-- Faucet -->
-      <div class="function-container">
-         <button id="usdStableCoinFaucetButton">UsdStableCoin Faucet</button>
+         <p id="donateUSDMessage"></p>
       </div>
 
       <hr />
@@ -186,6 +116,7 @@
          <label for="submitSurveyAtMostChoice">At Most Choice:</label>
          <input type="number" id="submitSurveyAtMostChoice" placeholder="Enter at most choice" />
          <button id="submitSurveyButton">Submit Survey</button>
+         <p id="submitSurveyMessage"></p>
       </div>
 
       <hr />
@@ -197,6 +128,45 @@
          <label for="takeSurveyChoices">Choices (comma-separated):</label>
          <input type="text" id="takeSurveyChoices" placeholder="Enter choices" />
          <button id="takeSurveyButton">Take Survey</button>
+         <p id="takeSurveyMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Number of Surveys -->
+      <div class="function-container">
+         <button id="getNoOfSurveysButton">Get Number of Surveys</button>
+         <p id="getNoOfSurveysMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Survey Information -->
+      <div class="function-container">
+         <label for="surveyId">Survey ID:</label>
+         <input type="number" id="surveyId" placeholder="Enter survey ID" />
+         <button id="getSurveyInfoButton">Get Survey Info</button>
+         <p id="getSurveyInfoMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Survey Owner -->
+      <div class="function-container">
+         <label for="surveyOwnerSurveyId">Survey ID:</label>
+         <input type="number" id="surveyOwnerSurveyId" placeholder="Enter survey ID" />
+         <button id="getSurveyOwnerButton">Get Survey Owner</button>
+         <p id="getSurveyOwnerMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Survey Results -->
+      <div class="function-container">
+         <label for="surveyResultsSurveyId">Survey ID:</label>
+         <input type="number" id="surveyResultsSurveyId" placeholder="Enter survey ID" />
+         <button id="getSurveyResultsButton">Get Survey Results</button>
+         <p id="getSurveyResultsMessage"></p>
       </div>
 
       <hr />
@@ -212,6 +182,7 @@
          <label for="submitProjectSchedule">Pay Schedule (comma-separated):</label>
          <input type="text" id="submitProjectSchedule" placeholder="Enter pay schedule" />
          <button id="submitProjectProposalButton">Submit Project Proposal</button>
+         <p id="submitProjectProposalMessage"></p>
       </div>
 
       <hr />
@@ -221,6 +192,7 @@
          <label for="reserveGrantProjectId">Project ID:</label>
          <input type="number" id="reserveGrantProjectId" placeholder="Enter project ID" />
          <button id="reserveProjectGrantButton">Reserve Project Grant</button>
+         <p id="reserveProjectGrantMessage"></p>
       </div>
 
       <hr />
@@ -230,6 +202,7 @@
          <label for="withdrawPaymentProjectId">Project ID:</label>
          <input type="number" id="withdrawPaymentProjectId" placeholder="Enter project ID" />
          <button id="withdrawProjectPaymentButton">Withdraw Project Payment</button>
+         <p id="withdrawProjectPaymentMessage"></p>
       </div>
 
       <hr />
@@ -241,6 +214,7 @@
          <label for="delegateVoteProjectId">Project ID:</label>
          <input type="number" id="delegateVoteProjectId" placeholder="Enter project ID" />
          <button id="delegateVoteToButton">Delegate Vote</button>
+         <p id="delegateVoteToMessage"></p>
       </div>
 
       <hr />
@@ -252,6 +226,7 @@
          <label for="voteForProjectChoice">Choice (true/false):</label>
          <input type="text" id="voteForProjectChoice" placeholder="Enter choice" />
          <button id="voteForProjectProposalButton">Vote for Project Proposal</button>
+         <p id="voteForProjectProposalMessage"></p>
       </div>
 
       <hr />
@@ -263,6 +238,73 @@
          <label for="voteForPaymentChoice">Choice (true/false):</label>
          <input type="text" id="voteForPaymentChoice" placeholder="Enter choice" />
          <button id="voteForProjectPaymentButton">Vote for Project Payment</button>
+         <p id="voteForProjectPaymentMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Is Project Funded -->
+      <div class="function-container">
+         <label for="projectFundedId">Project ID:</label>
+         <input type="number" id="projectFundedId" placeholder="Enter project ID" />
+         <button id="getIsProjectFundedButton">Is Project Funded</button>
+         <p id="getIsProjectFundedMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Project Next Payment -->
+      <div class="function-container">
+         <label for="projectNextPaymentId">Project ID:</label>
+         <input type="number" id="projectNextPaymentId" placeholder="Enter project ID" />
+         <button id="getProjectNextPaymentButton">Get Project Next Payment</button>
+         <p id="getProjectNextPaymentMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Project Owner -->
+      <div class="function-container">
+         <label for="projectOwnerProjectId">Project ID:</label>
+         <input type="number" id="projectOwnerProjectId" placeholder="Enter project ID" />
+         <button id="getProjectOwnerButton">Get Project Owner</button>
+         <p id="getProjectOwnerMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Project Info -->
+      <div class="function-container">
+         <label for="projectInfoId">Project ID:</label>
+         <input type="number" id="projectInfoId" placeholder="Enter project ID" />
+         <button id="getProjectInfoButton">Get Project Info</button>
+         <p id="getProjectInfoMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Number of Project Proposals -->
+      <div class="function-container">
+         <button id="getNoOfProjectProposalsButton">Get Number of Project Proposals</button>
+         <p id="getNoOfProjectProposalsMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get Number of Funded Projects -->
+      <div class="function-container">
+         <button id="getNoOfFundedProjectsButton">Get Number of Funded Projects</button>
+         <p id="getNoOfFundedProjectsMessage"></p>
+      </div>
+
+      <hr />
+
+      <!-- Get USD Received by Project -->
+      <div class="function-container">
+         <label for="usdReceivedProjectId">Project ID:</label>
+         <input type="number" id="usdReceivedProjectId" placeholder="Enter project ID" />
+         <button id="getUSDReceivedByProjectButton">Get USD Received by Project</button>
+         <p id="getUSDReceivedByProjectMessage"></p>
       </div>
 
       <hr />
@@ -274,6 +316,7 @@
          <label for="transferUSDAmount">Transfer Amount:</label>
          <input type="number" id="transferUSDAmount" placeholder="Enter amount" />
          <button id="transferUSDButton">Transfer USD</button>
+         <p id="transferUSDMessage"></p>
       </div>
 
       <script type="module" src="./index.js"></script>

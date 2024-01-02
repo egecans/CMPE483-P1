@@ -1,64 +1,87 @@
 import { ethers } from "./ethers-5.6.esm.min.js";
 import { myGovTokenAbi, myGovTokenContractAddress, usdStableCoinAbi, usdStableCoinContractAddress } from "./constants.js";
 
-const loadingSpinner = document.getElementById("loadingSpinner");
-
 // Connect Button
 const connectButton = document.getElementById("connectButton");
+const connectMessage = document.getElementById("connectMessage");
 
-// Get Balance Button
-const balanceButton = document.getElementById("balanceButton");
+// Get Balance of MyGovToken
+const getBalanceOfMyGovTokenButton = document.getElementById("getBalanceOfMyGovTokenButton");
+const getBalanceOfMyGovTokenMessage = document.getElementById("getBalanceOfMyGovTokenMessage");
+
+// Get Balance of USD Stable Coin
+const getBalanceOfUSDStableCoinButton = document.getElementById("getBalanceOfUSDStableCoinButton");
+const getBalanceOfUSDStableCoinMessage = document.getElementById("getBalanceOfUSDStableCoinMessage");
 
 // Donate MyGovToken
 const donateMyGovTokenAmount = document.getElementById("donateMyGovTokenAmount");
 const donateMyGovTokenButton = document.getElementById("donateMyGovTokenButton");
+const donateMyGovTokenMessage = document.getElementById("donateMyGovTokenMessage");
 
 // Donate USD Stable Coins
 const donateUSDAmount = document.getElementById("donateUSDAmount");
 const donateUSDButton = document.getElementById("donateUSDButton");
+const donateUSDMessage = document.getElementById("donateUSDMessage");
 
 // Get Survey Information
 const surveyId = document.getElementById("surveyId");
 const getSurveyInfoButton = document.getElementById("getSurveyInfoButton");
+const getSurveyInfoMessage = document.getElementById("getSurveyInfoMessage");
 
 // Get Survey Owner
 const surveyOwnerSurveyId = document.getElementById("surveyOwnerSurveyId");
 const getSurveyOwnerButton = document.getElementById("getSurveyOwnerButton");
+const getSurveyOwnerMessage = document.getElementById("getSurveyOwnerMessage");
+
+// Get Survey Results
+const surveyResultsSurveyId = document.getElementById("surveyResultsSurveyId");
+const getSurveyResultsButton = document.getElementById("getSurveyResultsButton");
+const getSurveyResultsMessage = document.getElementById("getSurveyResultsMessage");
 
 // Get Is Project Funded
 const projectFundedId = document.getElementById("projectFundedId");
 const getIsProjectFundedButton = document.getElementById("getIsProjectFundedButton");
+const getIsProjectFundedMessage = document.getElementById("getIsProjectFundedMessage");
 
 // Get Project Next Payment
 const projectNextPaymentId = document.getElementById("projectNextPaymentId");
 const getProjectNextPaymentButton = document.getElementById("getProjectNextPaymentButton");
+const getProjectNextPaymentMessage = document.getElementById("getProjectNextPaymentMessage");
 
 // Get Project Owner
 const projectOwnerProjectId = document.getElementById("projectOwnerProjectId");
 const getProjectOwnerButton = document.getElementById("getProjectOwnerButton");
+const getProjectOwnerMessage = document.getElementById("getProjectOwnerMessage");
 
 // Get Project Info
 const projectInfoId = document.getElementById("projectInfoId");
 const getProjectInfoButton = document.getElementById("getProjectInfoButton");
+const getProjectInfoMessage = document.getElementById("getProjectInfoMessage");
 
 // Get Number of Project Proposals
 const getNoOfProjectProposalsButton = document.getElementById("getNoOfProjectProposalsButton");
+const getNoOfProjectProposalsMessage = document.getElementById("getNoOfProjectProposalsMessage");
 
 // Get Number of Funded Projects
 const getNoOfFundedProjectsButton = document.getElementById("getNoOfFundedProjectsButton");
+const getNoOfFundedProjectsMessage = document.getElementById("getNoOfFundedProjectsMessage");
 
 // Get USD Received by Project
 const usdReceivedProjectId = document.getElementById("usdReceivedProjectId");
 const getUSDReceivedByProjectButton = document.getElementById("getUSDReceivedByProjectButton");
+const getUSDReceivedByProjectMessage = document.getElementById("getUSDReceivedByProjectMessage");
 
 // Get Number of Surveys
 const getNoOfSurveysButton = document.getElementById("getNoOfSurveysButton");
+const getNoOfSurveysMessage = document.getElementById("getNoOfSurveysMessage");
 
 // Faucet
 const myGovTokenFaucetButton = document.getElementById("myGovTokenFaucetButton");
+const usdStableCoinFaucetMessage = document.getElementById("usdStableCoinFaucetMessage");
 
 // Faucet
 const usdStableCoinFaucetButton = document.getElementById("usdStableCoinFaucetButton");
+const myGovTokenFaucetMessage = document.getElementById("myGovTokenFaucetMessage");
 
 // Submit Survey
 const submitSurveyIpfs = document.getElementById("submitSurveyIpfs");
@@ -66,11 +89,13 @@ const submitSurveyDeadline = document.getElementById("submitSurveyDeadline");
 const submitSurveyNumChoices = document.getElementById("submitSurveyNumChoices");
 const submitSurveyAtMostChoice = document.getElementById("submitSurveyAtMostChoice");
 const submitSurveyButton = document.getElementById("submitSurveyButton");
+const submitSurveyMessage = document.getElementById("submitSurveyMessage");
 
 // Take Survey
 const takeSurveyId = document.getElementById("takeSurveyId");
 const takeSurveyChoices = document.getElementById("takeSurveyChoices");
 const takeSurveyButton = document.getElementById("takeSurveyButton");
+const takeSurveyMessage = document.getElementById("takeSurveyMessage");
 
 // Submit Project Proposal
 const submitProjectIpfs = document.getElementById("submitProjectIpfs");
@@ -78,36 +103,51 @@ const submitProjectDeadline = document.getElementById("submitProjectDeadline");
 const submitProjectAmounts = document.getElementById("submitProjectAmounts");
 const submitProjectSchedule = document.getElementById("submitProjectSchedule");
 const submitProjectProposalButton = document.getElementById("submitProjectProposalButton");
+const submitProjectProposalMessage = document.getElementById("submitProjectProposalMessage");
 
 // Reserve Project Grant
 const reserveGrantProjectId = document.getElementById("reserveGrantProjectId");
 const reserveProjectGrantButton = document.getElementById("reserveProjectGrantButton");
+const reserveProjectGrantMessage = document.getElementById("reserveProjectGrantMessage");
 
 // Withdraw Project Payment
 const withdrawPaymentProjectId = document.getElementById("withdrawPaymentProjectId");
 const withdrawProjectPaymentButton = document.getElementById("withdrawProjectPaymentButton");
+const withdrawProjectPaymentMessage = document.getElementById("withdrawProjectPaymentMessage");
 
 // Delegate Vote
 const delegateVoteMemberAddress = document.getElementById("delegateVoteMemberAddress");
 const delegateVoteProjectId = document.getElementById("delegateVoteProjectId");
 const delegateVoteToButton = document.getElementById("delegateVoteToButton");
+const delegateVoteToMessage = document.getElementById("delegateVoteToMessage");
 
 // Vote for Project Proposal
 const voteForProjectId = document.getElementById("voteForProjectId");
 const voteForProjectChoice = document.getElementById("voteForProjectChoice");
 const voteForProjectProposalButton = document.getElementById("voteForProjectProposalButton");
+const voteForProjectProposalMessage = document.getElementById("voteForProjectProposalMessage");
 
 // Vote for Project Payment
 const voteForPaymentProjectId = document.getElementById("voteForPaymentProjectId");
 const voteForPaymentChoice = document.getElementById("voteForPaymentChoice");
 const voteForProjectPaymentButton = document.getElementById("voteForProjectPaymentButton");
+const voteForProjectPaymentMessage = document.getElementById("voteForProjectPaymentMessage");
+
+// Transfer from USD
+const transferUSDReceiver = document.getElementById("transferUSDReceiver");
+const transferUSDAmount = document.getElementById("transferUSDAmount");
+const transferUSDButton = document.getElementById("transferUSDButton");
+const transferUSDMessage = document.getElementById("transferUSDMessage");
 
 //=================================================================================================================================================================
 // Connect Button
 connectButton.onclick = connect;
 
-// Get Balance Button
-balanceButton.onclick = getBalance;
+// Get Balance of MyGovToken
+getBalanceOfMyGovTokenButton.onclick = getBalanceOfMyGovToken;
+
+// Get Balance of USD Stable Coin
+getBalanceOfUSDStableCoinButton.onclick = getBalanceOfUSDStableCoin;
 
 // Donate MyGovToken
 donateMyGovTokenButton.onclick = () => {
@@ -131,6 +171,12 @@ getSurveyInfoButton.onclick = () => {
 getSurveyOwnerButton.onclick = () => {
    const id = parseInt(surveyOwnerSurveyId.value);
    getSurveyOwner(id);
+};
+
+// Get Survey Results
+getSurveyResultsButton.onclick = () => {
+   const id = parseInt(surveyResultsSurveyId.value);
+   getSurveyResults(id);
 };
 
 // Get Is Project Funded
@@ -235,6 +281,13 @@ voteForProjectPaymentButton.onclick = () => {
    const choice = voteForPaymentChoice.value.toLowerCase() === "true";
    voteForProjectPayment(id, choice);
 };
+
+transferUSDButton.onclick = () => {
+   const receiver = transferUSDReceiver.value;
+   const amount = parseInt(transferUSDAmount.value);
+   transferFromUSD(receiver, amount);
+};
+
 //=================================================================================================================================================================
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner(); // how we are getting the account from the metamask
@@ -246,24 +299,43 @@ async function connect() {
    if (typeof window.ethereum !== "ethereum") {
       try {
          await window.ethereum.request({ method: "eth_requestAccounts" });
+         connectButton.innerHTML = "CONNECTED!!!";
+         const accounts = await window.ethereum.request({
+            method: "eth_accounts",
+         });
+         connectMessage.innerHTML = `Connected to ${accounts[0]}`;
       } catch (er) {
-         console.log(er);
+         connectButton.innerHTML = "NOT CONNECTED!!!";
+         connectMessage.innerHTML = `Connection error: ${er}`;      
       }
-      connectButton.innerHTML = "CONNECTED!!!";
-      const accounts = await window.ethereum.request({
-         method: "eth_accounts",
-      });
-      console.log(accounts);
+      
    }
 }
-async function getBalance() {
-   // balance of the contract
-   if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.providers.Web3Provider(window.ethereum); // ethers know that this is a wallet, and it will call the RPC inside the network
-      const balance = await provider.getBalance(myGovTokenContractAddress);
-      console.log(balance.toString());
+
+async function getBalanceOfMyGovToken() {
+   try {
+      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
+      const balance = await myGovTokenContract.balanceOf(signer.getAddress());
+
+      getBalanceOfMyGovTokenMessage.innerHTML = `MyGovToken Balance: ${balance}`;
+   }
+   catch (error) {
+      getBalanceOfMyGovTokenMessage.innerHTML = `Error getting the MyGovToken balance: ${error}`;
    }
 }
+
+async function getBalanceOfUSDStableCoin() {
+   try {
+      // Assuming 'usdStableCoinContract' is your instantiated USD Stable Coin contract
+      const balance = await usdStableCoinContract.balanceOf(signer.getAddress());
+
+      getBalanceOfUSDStableCoinMessage.innerHTML = `USD Stable Coin Balance: ${balance}`;
+   }
+   catch (error) {
+      getBalanceOfUSDStableCoinMessage.innerHTML = `Error getting the USD Stable Coin balance: ${error}`;
+   }
+}
+
 
 async function donateMyGovToken(amount) {
    try {
@@ -272,10 +344,11 @@ async function donateMyGovToken(amount) {
 
       // Wait for the transaction to be mined
       const receipt = await tx.wait();
-
-      console.log("Donation successful. Transaction receipt:", receipt);
+      donateMyGovTokenMessage.innerHTML = "Donation successful.";
+      console.log(`Donation successful. Transaction receipt: ${receipt}`); 
    } catch (error) {
-      console.error("Error donating MyGov tokens:", error);
+      donateMyGovTokenMessage.innerHTML = "Error donating MyGov tokens.";
+      console.log(`Error donating MyGov tokens: ${error}`);
    }
 }
 
@@ -288,11 +361,11 @@ async function donateUSD(amount) {
 
       // Wait for the transaction to be mined
       const receipt = await tx.wait();
-
-      console.log("Donation successful. Transaction receipt:", receipt);
+      donateUSDMessage.innerHTML = "Donation successful.";
+      console.log(`Donation successful. Transaction receipt: ${receipt}`); 
    } catch (error) {
-      console.error("Error donating USD Stable Coins:", error);
-   }
+      donateUSDMessage.innerHTML = "Error donating USD tokens.";
+      console.log(`Error donating USD tokens: ${error}`);   }
 }
 
 async function getSurveyInfo(surveyId) {
@@ -303,13 +376,10 @@ async function getSurveyInfo(surveyId) {
       // The result will be an array with the values returned by the function
       const [ipfshash, surveydeadline, numchoices, atmostchoice] = result;
 
-      console.log("Survey Information:");
-      console.log("IPFS Hash:", ipfshash);
-      console.log("Survey Deadline:", surveydeadline);
-      console.log("Number of Choices:", numchoices);
-      console.log("At Most Choice:", atmostchoice);
+      getSurveyInfoMessage.innerHTML = `Survey Information: <br> IPFS Hash: ${ipfshash} <br> Survey Deadline: ${surveydeadline} <br> Number of Choices: ${numchoices} <br> At Most Choice: ${atmostchoice}`;
+
    } catch (error) {
-      console.error("Error getting survey information:", error);
+      getSurveyInfoMessage.innerHTML = `Error Getting Survey Info: ${error}`;
    }
 }
 
@@ -318,9 +388,23 @@ async function getSurveyOwner(surveyId) {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getSurveyOwner(surveyId);
 
-      console.log("Survey Owner:", result);
+      getSurveyOwnerMessage.innerHTML = `Survey Owner: ${result}`;
    } catch (error) {
-      console.error("Error getting survey owner:", error);
+      getSurveyOwnerMessage.innerHTML = `Error Getting Survey Owner: ${error}`;
+   }
+}
+
+async function getSurveyResults(surveyId) {
+   try {
+      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
+      const result = await myGovTokenContract.getSurveyResults(surveyId);
+
+      // The result will be an array with the values returned by the function
+      const [numtaken, results] = result;
+
+      getSurveyResultsMessage.innerHTML = `Survey Results: <br> Number of Taken: ${numtaken} <br> Results: ${results}`;
+   } catch (error) {
+      getSurveyResultsMessage.innerHTML = `Error Getting Survey Results: ${error}`;
    }
 }
 
@@ -328,10 +412,9 @@ async function getIsProjectFunded(projectId) {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getIsProjectFunded(projectId);
-
-      console.log("Is Project Funded:", result);
+      getIsProjectFundedMessage.innerHTML = `Is Project Funded: ${result}`;
    } catch (error) {
-      console.error("Error checking if the project is funded:", error);
+      getIsProjectFundedMessage.innerHTML = `Error checking if the project is funded: ${error}`;
    }
 }
 
@@ -339,10 +422,9 @@ async function getProjectNextPayment(projectId) {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getProjectNextPayment(projectId);
-
-      console.log("Next Payment Amount:", result);
+      getProjectNextPaymentMessage.innerHTML = `Next Payment Amount: ${result}`;
    } catch (error) {
-      console.error("Error getting the next payment amount for the project:", error);
+      getProjectNextPaymentMessage.innerHTML = `Error getting the next payment amount for the project: ${error}`;
    }
 }
 
@@ -350,10 +432,9 @@ async function getProjectOwner(projectId) {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getProjectOwner(projectId);
-
-      console.log("Project Owner:", result);
+      getProjectOwnerMessage.innerHTML = `Project Owner: ${result}`;
    } catch (error) {
-      console.error("Error getting the project owner:", error);
+      getProjectOwnerMessage.innerHTML = `Error getting the project owner: ${error}`;
    }
 }
 
@@ -364,14 +445,9 @@ async function getProjectInfo(activityId) {
 
       // The result will be an array with the values returned by the function
       const [ipfshash, votedeadline, paymentamounts, payschedule] = result;
-
-      console.log("Project Information:");
-      console.log("IPFS Hash:", ipfshash);
-      console.log("Vote Deadline:", votedeadline);
-      console.log("Payment Amounts:", paymentamounts);
-      console.log("Pay Schedule:", payschedule);
+      getProjectInfoMessage.innerHTML = `Project Information: <br> IPFS Hash: ${ipfshash} <br> Vote Deadline: ${votedeadline} <br> Payment Amounts: ${paymentamounts} <br> Pay Schedule: ${payschedule}`;
    } catch (error) {
-      console.error("Error getting project information:", error);
+      getProjectInfoMessage.innerHTML = `Error getting project information: ${error}`;
    }
 }
 
@@ -379,10 +455,9 @@ async function getNoOfProjectProposals() {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfProjectProposals();
-
-      console.log("Number of Project Proposals:", result);
+      getNoOfProjectProposalsMessage.innerHTML = `Number of Project Proposals: ${result}`;
    } catch (error) {
-      console.error("Error getting the number of project proposals:", error);
+      getNoOfProjectProposalsMessage.innerHTML = `Error getting the number of project proposals: ${error}`;
    }
 }
 
@@ -390,10 +465,9 @@ async function getNoOfFundedProjects() {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfFundedProjects();
-
-      console.log("Number of Funded Projects:", result);
+      getNoOfFundedProjectsMessage.innerHTML = `Number of Funded Projects: ${result}`;
    } catch (error) {
-      console.error("Error getting the number of funded projects:", error);
+      getNoOfFundedProjectsMessage.innerHTML = `Error getting the number of funded projects: ${error}`;
    }
 }
 
@@ -401,10 +475,9 @@ async function getUSDReceivedByProject(projectId) {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getUSDReceivedByProject(projectId);
-
-      console.log("USD Received by Project:", result);
+      getUSDReceivedByProjectMessage.innerHTML = `USD Received by Project: ${result}`;
    } catch (error) {
-      console.error("Error getting USD received by the project:", error);
+      getUSDReceivedByProjectMessage.innerHTML = `Error getting USD received by the project: ${error}`;
    }
 }
 
@@ -412,10 +485,9 @@ async function getNoOfSurveys() {
    try {
       // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfSurveys();
-
-      console.log("Number of Surveys:", result);
+      getNoOfSurveysMessage.innerHTML = `Number of Surveys: ${result}`;
    } catch (error) {
-      console.error("Error getting the number of surveys:", error);
+      getNoOfSurveysMessage.innerHTML = `Error getting the number of surveys: ${error}`;
    }
 }
 
@@ -426,9 +498,10 @@ async function myGovTokenFaucet() {
 
       // Wait for the transaction to be mined
       const receipt = await faucetTx.wait();
-
+      myGovTokenFaucetMessage.innerHTML = "Faucet successful.";
       console.log("Faucet successful. Transaction receipt:", receipt);
    } catch (error) {
+      myGovTokenFaucetMessage.innerHTML = "Error using the faucet.";
       console.log(`Error while using the faucet:${error.message}`);
    }
 }
@@ -440,9 +513,10 @@ async function submitSurvey(ipfshash, surveydeadline, numchoices, atmostchoice) 
 
       // Wait for the transaction to be mined
       const receipt = await submitSurveyTx.wait();
-
+      submitSurveyMessage.innerHTML = "Survey submitted successfully.";
       console.log("Survey submitted successfully. Transaction receipt:", receipt);
    } catch (error) {
+      submitSurveyMessage.innerHTML = "Error submitting survey.";
       console.error("Error submitting survey:", error);
    }
 }
@@ -454,9 +528,10 @@ async function takeSurvey(surveyId, choices) {
 
       // Wait for the transaction to be mined
       const receipt = await takeSurveyTx.wait();
-
+      takeSurveyMessage.innerHTML = "Survey taken successfully.";
       console.log("Survey taken successfully. Transaction receipt:", receipt);
    } catch (error) {
+      takeSurveyMessage.innerHTML = "Error taking the survey.";
       console.error("Error taking the survey:", error);
    }
 }
@@ -468,9 +543,10 @@ async function submitProjectProposal(ipfshash, votedeadline, paymentamounts, pay
 
       // Wait for the transaction to be mined
       const receipt = await submitProjectTx.wait();
-
+      submitProjectProposalMessage.innerHTML = "Project proposal submitted successfully.";
       console.log("Project proposal submitted successfully. Transaction receipt:", receipt);
    } catch (error) {
+      submitProjectProposalMessage.innerHTML = "Error submitting project proposal.";
       console.error("Error submitting project proposal:", error);
    }
 }
@@ -484,8 +560,10 @@ async function reserveProjectGrant(projectId) {
       const receipt = await reserveGrantTx.wait();
 
       // Update reservedUSD and numOfFundedProjects
+      reserveProjectGrantMessage.innerHTML = "Project grant reserved successfully.";
       console.log("Project grant reserved successfully.", receipt);
    } catch (error) {
+      reserveProjectGrantMessage.innerHTML = "Error reserving project grant.";
       console.error("Error reserving project grant:", error);
    }
 }
@@ -499,8 +577,10 @@ async function withdrawProjectPayment(projectId) {
       const receipt = await withdrawPaymentTx.wait();
 
       // Update reservedUSD and project status if needed
+      withdrawProjectPaymentMessage.innerHTML = "Project payment withdrawn successfully.";
       console.log("Project payment withdrawn successfully.", receipt);
    } catch (error) {
+      withdrawProjectPaymentMessage.innerHTML = "Error withdrawing project payment.";
       console.error("Error withdrawing project payment:", error);
    }
 }
@@ -513,8 +593,9 @@ async function delegateVoteTo(memberAddress, projectId) {
       // Wait for the transaction to be mined
       await delegateVoteTx.wait();
 
-      console.log("Vote delegated successfully.");
+      delegateVoteToMessage.innerHTML = "Vote delegated successfully.";
    } catch (error) {
+      delegateVoteToMessage.innerHTML = "Error delegating vote.";
       console.error("Error delegating vote:", error);
    }
 }
@@ -527,8 +608,9 @@ async function voteForProjectProposal(projectId, choice) {
       // Wait for the transaction to be mined
       await voteForProjectTx.wait();
 
-      console.log("Vote for project proposal submitted successfully.");
+      voteForProjectProposalMessage.innerHTML = "Vote for project proposal submitted successfully.";
    } catch (error) {
+      voteForProjectProposalMessage.innerHTML = "Error voting for project proposal.";
       console.error("Error voting for project proposal:", error);
    }
 }
@@ -541,8 +623,9 @@ async function voteForProjectPayment(projectId, choice) {
       // Wait for the transaction to be mined
       await voteForPaymentTx.wait();
 
-      console.log("Vote for project payment submitted successfully.");
+      voteForProjectPaymentMessage.innerHTML = "Vote for project payment submitted successfully.";
    } catch (error) {
+      voteForProjectPaymentMessage.innerHTML = "Error voting for project payment.";
       console.error("Error voting for project payment:", error);
    }
 }
@@ -551,8 +634,10 @@ async function usdStableCoinFaucet() {
    try {
       const transaction = await usdStableCoinContract.faucet();
       const receipt = await transaction.wait();
+      usdStableCoinFaucetMessage.innerHTML = "Faucet successful.";
       console.log(`Successfully obtained USDStableCoin. Receipt: ${receipt}`);
    } catch (error) {
+      usdStableCoinFaucetMessage.innerHTML = "Error using the faucet.";
       console.log(`An error occurred during usdStableCoinFaucet: ${error}`);
    }
 }
@@ -566,8 +651,9 @@ async function transferFromUSD(receiver, amount) {
       // Wait for the transaction to be mined
       await transaction.wait();
 
-      console.log(`Transfer successful! ${amount} USD sent to ${receiver}`);
+      transferUSDMessage.innerHTML = `Transfer successful! ${amount} USD sent to ${receiver}`;
    } catch (error) {
+      transferUSDMessage.innerHTML = "Error transferring USD.";
       console.error("Error:", error.message);
    }
 }
