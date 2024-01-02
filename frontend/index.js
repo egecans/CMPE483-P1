@@ -314,7 +314,6 @@ async function connect() {
 
 async function getBalanceOfMyGovToken() {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const balance = await myGovTokenContract.balanceOf(signer.getAddress());
 
       getBalanceOfMyGovTokenMessage.innerHTML = `MyGovToken Balance: ${balance}`;
@@ -326,7 +325,6 @@ async function getBalanceOfMyGovToken() {
 
 async function getBalanceOfUSDStableCoin() {
    try {
-      // Assuming 'usdStableCoinContract' is your instantiated USD Stable Coin contract
       const balance = await usdStableCoinContract.balanceOf(signer.getAddress());
 
       getBalanceOfUSDStableCoinMessage.innerHTML = `USD Stable Coin Balance: ${balance}`;
@@ -339,7 +337,6 @@ async function getBalanceOfUSDStableCoin() {
 
 async function donateMyGovToken(amount) {
    try {
-      // Assuming 'contract' is your instantiated ethers.js contract
       const tx = await myGovTokenContract.donateMyGovToken(amount);
 
       // Wait for the transaction to be mined
@@ -354,8 +351,6 @@ async function donateMyGovToken(amount) {
 
 async function donateUSD(amount) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
-      // Assuming 'usdStableCoinContract' is your instantiated USD Stable Coin contract
       const gasLimit = 200000;
       const tx = await myGovTokenContract.donateUSD(amount, { gasLimit });
 
@@ -370,10 +365,8 @@ async function donateUSD(amount) {
 
 async function getSurveyInfo(surveyId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getSurveyInfo(surveyId);
 
-      // The result will be an array with the values returned by the function
       const [ipfshash, surveydeadline, numchoices, atmostchoice] = result;
 
       getSurveyInfoMessage.innerHTML = `Survey Information: <br> IPFS Hash: ${ipfshash} <br> Survey Deadline: ${surveydeadline} <br> Number of Choices: ${numchoices} <br> At Most Choice: ${atmostchoice}`;
@@ -385,7 +378,6 @@ async function getSurveyInfo(surveyId) {
 
 async function getSurveyOwner(surveyId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getSurveyOwner(surveyId);
 
       getSurveyOwnerMessage.innerHTML = `Survey Owner: ${result}`;
@@ -396,7 +388,6 @@ async function getSurveyOwner(surveyId) {
 
 async function getSurveyResults(surveyId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getSurveyResults(surveyId);
 
       // The result will be an array with the values returned by the function
@@ -410,7 +401,6 @@ async function getSurveyResults(surveyId) {
 
 async function getIsProjectFunded(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getIsProjectFunded(projectId);
       getIsProjectFundedMessage.innerHTML = `Is Project Funded: ${result}`;
    } catch (error) {
@@ -420,7 +410,6 @@ async function getIsProjectFunded(projectId) {
 
 async function getProjectNextPayment(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getProjectNextPayment(projectId);
       getProjectNextPaymentMessage.innerHTML = `Next Payment Amount: ${result}`;
    } catch (error) {
@@ -430,7 +419,6 @@ async function getProjectNextPayment(projectId) {
 
 async function getProjectOwner(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getProjectOwner(projectId);
       getProjectOwnerMessage.innerHTML = `Project Owner: ${result}`;
    } catch (error) {
@@ -440,10 +428,8 @@ async function getProjectOwner(projectId) {
 
 async function getProjectInfo(activityId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getProjectInfo(activityId);
-
-      // The result will be an array with the values returned by the function
+      
       const [ipfshash, votedeadline, paymentamounts, payschedule] = result;
       getProjectInfoMessage.innerHTML = `Project Information: <br> IPFS Hash: ${ipfshash} <br> Vote Deadline: ${votedeadline} <br> Payment Amounts: ${paymentamounts} <br> Pay Schedule: ${payschedule}`;
    } catch (error) {
@@ -453,7 +439,6 @@ async function getProjectInfo(activityId) {
 
 async function getNoOfProjectProposals() {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfProjectProposals();
       getNoOfProjectProposalsMessage.innerHTML = `Number of Project Proposals: ${result}`;
    } catch (error) {
@@ -463,7 +448,6 @@ async function getNoOfProjectProposals() {
 
 async function getNoOfFundedProjects() {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfFundedProjects();
       getNoOfFundedProjectsMessage.innerHTML = `Number of Funded Projects: ${result}`;
    } catch (error) {
@@ -473,7 +457,6 @@ async function getNoOfFundedProjects() {
 
 async function getUSDReceivedByProject(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getUSDReceivedByProject(projectId);
       getUSDReceivedByProjectMessage.innerHTML = `USD Received by Project: ${result}`;
    } catch (error) {
@@ -483,7 +466,6 @@ async function getUSDReceivedByProject(projectId) {
 
 async function getNoOfSurveys() {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const result = await myGovTokenContract.getNoOfSurveys();
       getNoOfSurveysMessage.innerHTML = `Number of Surveys: ${result}`;
    } catch (error) {
@@ -493,7 +475,6 @@ async function getNoOfSurveys() {
 
 async function myGovTokenFaucet() {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const faucetTx = await myGovTokenContract.faucet();
 
       // Wait for the transaction to be mined
@@ -508,7 +489,6 @@ async function myGovTokenFaucet() {
 
 async function submitSurvey(ipfshash, surveydeadline, numchoices, atmostchoice) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const submitSurveyTx = await myGovTokenContract.submitSurvey(ipfshash, surveydeadline, numchoices, atmostchoice);
 
       // Wait for the transaction to be mined
@@ -523,7 +503,6 @@ async function submitSurvey(ipfshash, surveydeadline, numchoices, atmostchoice) 
 
 async function takeSurvey(surveyId, choices) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const takeSurveyTx = await myGovTokenContract.takeSurvey(surveyId, choices);
 
       // Wait for the transaction to be mined
@@ -538,7 +517,6 @@ async function takeSurvey(surveyId, choices) {
 
 async function submitProjectProposal(ipfshash, votedeadline, paymentamounts, payschedule) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const submitProjectTx = await myGovTokenContract.submitProjectProposal(ipfshash, votedeadline, paymentamounts, payschedule);
 
       // Wait for the transaction to be mined
@@ -553,13 +531,11 @@ async function submitProjectProposal(ipfshash, votedeadline, paymentamounts, pay
 
 async function reserveProjectGrant(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const reserveGrantTx = await myGovTokenContract.reserveProjectGrant(projectId);
 
       // Wait for the transaction to be mined
       const receipt = await reserveGrantTx.wait();
 
-      // Update reservedUSD and numOfFundedProjects
       reserveProjectGrantMessage.innerHTML = "Project grant reserved successfully.";
       console.log("Project grant reserved successfully.", receipt);
    } catch (error) {
@@ -570,13 +546,11 @@ async function reserveProjectGrant(projectId) {
 
 async function withdrawProjectPayment(projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const withdrawPaymentTx = await myGovTokenContract.withdrawProjectPayment(projectId);
 
       // Wait for the transaction to be mined
       const receipt = await withdrawPaymentTx.wait();
 
-      // Update reservedUSD and project status if needed
       withdrawProjectPaymentMessage.innerHTML = "Project payment withdrawn successfully.";
       console.log("Project payment withdrawn successfully.", receipt);
    } catch (error) {
@@ -587,7 +561,6 @@ async function withdrawProjectPayment(projectId) {
 
 async function delegateVoteTo(memberAddress, projectId) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const delegateVoteTx = await myGovTokenContract.delegateVoteTo(memberAddress, projectId);
 
       // Wait for the transaction to be mined
@@ -602,7 +575,6 @@ async function delegateVoteTo(memberAddress, projectId) {
 
 async function voteForProjectProposal(projectId, choice) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const voteForProjectTx = await myGovTokenContract.voteForProjectProposal(projectId, choice);
 
       // Wait for the transaction to be mined
@@ -617,7 +589,6 @@ async function voteForProjectProposal(projectId, choice) {
 
 async function voteForProjectPayment(projectId, choice) {
    try {
-      // Assuming 'myGovTokenContract' is your instantiated ethers.js contract for MyGovToken
       const voteForPaymentTx = await myGovTokenContract.voteForProjectPayment(projectId, choice);
 
       // Wait for the transaction to be mined
@@ -642,10 +613,8 @@ async function usdStableCoinFaucet() {
    }
 }
 
-// Function to transfer USD
 async function transferFromUSD(receiver, amount) {
    try {
-      // Call the transferFromUSD function on the contract
       const transaction = await usdStableCoinContract.transferFromUSD(receiver, amount);
 
       // Wait for the transaction to be mined
