@@ -1,7 +1,7 @@
 export const myGovTokenContractAddress =
-    "0x4B4F81ac6621bd362F7868691244EEdDbe85bB95";
+    "0xF2a882672b1715b68769DF01bdCF5c9d6Fe168af";
 export const usdStableCoinContractAddress =
-    "0x959bdD7ca3534dF41ea0581a4b50266cc5B94dFA"; // Here put the address of the contract
+    "0xa51b2c3C654E297068C04Ef15b534139867E0d1f"; // Here put the address of the contract
 export const myGovTokenAbi = [
     {
         inputs: [

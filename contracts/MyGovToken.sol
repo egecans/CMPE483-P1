@@ -87,7 +87,7 @@ contract MyGovToken is ERC20 {
 
 
     // Function for users to donate MyGov tokens to the contract
-    function donateMyGovToken(uint amount) public {
+    function donateMyGovToken(uint amount) public payable {
         require(balanceOf(msg.sender) >= amount, "Insufficient amount of MyGovToken");
         transfer(address(this), amount);
         if (balanceOf(msg.sender) == 0 && numberOfMembers > 0){
@@ -96,7 +96,7 @@ contract MyGovToken is ERC20 {
     }
 
     // Function for users to donate USD Stable Coins to the contract
-    function donateUSD(uint amount) public {
+    function donateUSD(uint amount) public payable {
         require(usdStableCoinContract.balanceOf(msg.sender) >= amount, "Insufficient amount of USD Stable Coin");
         usdStableCoinContract.transferFrom(msg.sender, address(usdStableCoinContract), amount);
     }
